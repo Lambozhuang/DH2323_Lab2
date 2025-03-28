@@ -99,7 +99,7 @@ public class TankController : MonoBehaviour
         Vector3 movement = transform.forward * m_MovementInputValue * m_Speed * Time.deltaTime;
 
         // Apply this movement to the rigidbody's position.
-        // m_Rigidbody.MovePosition(m_Rigidbody.position + movement);
+        m_Rigidbody.MovePosition(m_Rigidbody.position + movement);
     }
 
 
@@ -140,16 +140,9 @@ public class TankController : MonoBehaviour
         if (Physics.Raycast(camRay, out floorHit, camRayLength, floorMask))
         {
             // Your code here.
-            float dx = floorHit.point.x - m_turret.transform.position.x;
-            float dz = floorHit.point.z - m_turret.transform.position.z;
-            float hitAngle = Math.Abs(Mathf.Atan2(dx, dz) * Mathf.Rad2Deg);
-            
-            
-            m_turretRotation = hitAngle - m_turret.transform.rotation.eulerAngles.y * m_TurretRotateSpeed * Time.deltaTime;
-            Debug.Log($"turret rotation {m_turret.transform.rotation.eulerAngles.y}");
-            Debug.Log($"hit point rotation {hitAngle}");
-            Debug.Log($"d rotation {m_turret.transform.rotation.eulerAngles.y - hitAngle}");
-            m_turret.transform.localRotation = Quaternion.Euler(0f, m_turretRotation, 0f);
+            Vector3 direction = floorHit.point - m_turret.transform.position;
+            direction.y = 0;
+            m_turret.transform.rotation = Quaternion.LookRotation(direction);
         }
     }
 }
